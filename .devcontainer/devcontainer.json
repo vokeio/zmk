@@ -1,0 +1,12 @@
+{
+  "name": "ZMK Development",
+  "dockerFile": "Dockerfile",
+  "runArgs": ["--security-opt", "label=disable"],
+  "containerEnv": { "WORKSPACE_DIR": "${containerWorkspaceFolder}" },
+  "mounts": ["type=volume,source=zmk-config,target=/workspaces/zmk-config"],
+  "extensions": ["ms-vscode.cpptools"],
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "forwardPorts": [3000]
+}

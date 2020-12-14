@@ -1,27 +1,36 @@
 #!/bin/sh
 #
-# Copyright (c) 2020 Peter Johanson; Cody McGinnis
+# Copyright (c) 2020 The ZMK Contributors
 #
 # SPDX-License-Identifier: MIT
 #
-
 if [ -z "$1" ]; then
 	echo "Usage: ./run-test.sh <path to testcase>"
 	exit 1
-elif [ "$1" = "all" ]; then
+fi
+
+path="$1"
+if [ $path = "all" ]; then
+	path="tests"
+fi
+
+testcases=$(find $path -name native_posix.keymap -exec dirname \{\} \;)
+num_cases=$(echo "$testcases" | wc -l)
+if [ $num_cases -gt 1 ]; then
 	echo "" > ./build/tests/pass-fail.log
-	find tests -name native_posix.keymap -exec dirname \{\} \; | xargs -l -P 4 ./run-test.sh
+	echo "$testcases" | xargs -l -P 4 ./run-test.sh
 	err=$?
 	sort -k2 ./build/tests/pass-fail.log
 	exit $err
 fi
 
-testcase="$1"
+testcase="$path"
 echo "Running $testcase:"
 
-west build -d build/$testcase -b native_posix -- -DZMK_CONFIG=$testcase > /dev/null 2>&1
+west build -d build/$testcase -b native_posix -- -DZMK_CONFIG="$(pwd)/$testcase" > /dev/null 2>&1
 if [ $? -gt 0 ]; then
 	echo "FAIL: $testcase did not build" >> ./build/tests/pass-fail.log
+	exit 1
 else
 	./build/$testcase/zephyr/zmk.exe | sed -e "s/.*> //" | tee build/$testcase/keycode_events_full.log | sed -n -f $testcase/events.patterns > build/$testcase/keycode_events.log
 	diff -au $testcase/keycode_events.snapshot build/$testcase/keycode_events.log

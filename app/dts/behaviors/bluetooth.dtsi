@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		bt: behavior_bluetooth {
+			compatible = "zmk,behavior-bluetooth";
+			label = "BLUETOOTH";
+			#binding-cells = <2>;
+		};
+	};
+};
