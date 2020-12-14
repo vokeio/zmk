@@ -1,0 +1,7 @@
+
+if SHIELD_VOKEIO
+
+config ZMK_KEYBOARD_NAME
+	default "Vokeio Keybaord"
+
+endif
