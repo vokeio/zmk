@@ -1,0 +1,2 @@
+
+west build -p -b nice_nano -- -DSHIELD=waaffle3 -DZMK_CONFIG="."
